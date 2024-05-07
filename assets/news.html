@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//Dtd HTML 3.2 Final//EN">
+<html>
+ 
+<head>
+	<title>Search Results for {{.Header}}</title>
+</head>
+ 
+<body>
+
+<h2 align="left">{{.Header}}</h2>
+{{range .StateEntries}}
+<p>
+<b>{{.State}}</b>
+ 
+<p>
+<table border="1" width="85%" cellpadding="1" cellspacing="0" bgcolor="ffffff">
+
+	<tr>
+		<th bgcolor="9fb6cd" valign="middle">City</th>
+		<th bgcolor="9fb6cd" valign="middle">Full Title</th>
+		<th bgcolor="9fb6cd" valign="middle">Begin</th>
+		<th bgcolor="9fb6cd" valign="middle">End</th>
+		<th bgcolor="9fb6cd" valign="middle">Call No.</th>
+	</tr>
+	{{range .Entries}}
+	<tr>
+		<td bgcolor="clcdcd" align="left" valign="middle">{{.City}}</td>
+		<td align="left" valign="middle">{{.Title}}</td>
+		<td align="left" valign="middle">{{.Begin}}</td>
+		<td align="left" valign="middle">{{.End}}</td>
+		<td align="left" valign="middle">{{.CallNo}}</td>
+	</tr>
+	{{end}}
+</table>
+{{end}}
+</body>
+ 
+</html>
