@@ -31,7 +31,7 @@ phases:
       # copy to the results bucket
       #
       #
-      - aws s3 cp ${CODEBUILD_SRC_DIR}/deployment.zip s3://${deploy_bucket}/${BUILD_VERSION}/deployment.zip --quiet
+      - aws s3 cp ${CODEBUILD_SRC_DIR}/bin/deployment.zip s3://${deploy_bucket}/${BUILD_VERSION}/deployment.zip --quiet
       #
       # create the git commit tag file
       #
