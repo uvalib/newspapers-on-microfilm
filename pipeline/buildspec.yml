@@ -18,6 +18,7 @@ phases:
     commands:
       - BUILD_VERSION=$(date --date="@$(echo ${CODEBUILD_START_TIME} | cut -c1-10)" +"%Y%m%d%H%M%S")
       - COMMIT_TAG=gitcommit-${CODEBUILD_RESOLVED_SOURCE_VERSION}
+      - apt install make gcc sqlite3
 
   build:
     commands:
