@@ -1,0 +1,30 @@
+#
+# deployspec.yml
+#
+
+version: 0.2
+
+env:
+  variables:
+    deploy_bucket: newspaper-db-deployable
+
+phases:
+  install:
+    runtime-versions:
+      golang: 1.x
+#    commands:
+
+#  pre_build:
+#    commands:
+
+  build:
+    commands:
+      #
+      - aws lambda update-function-code --function-name uva-newspaper-db-staging --s3-bucket ${deploy_bucket} --s3-key latest/deployment.zip
+
+#  post_build:
+#    commands:
+
+#
+# end of file
+#
