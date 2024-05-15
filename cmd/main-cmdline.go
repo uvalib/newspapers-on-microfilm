@@ -43,7 +43,7 @@ func main() {
 	}
 
 	if err != nil {
-		fmt.Printf("ERROR: %s\n", res.err.Error())
+		fmt.Printf("ERROR: %s\n", err.Error())
 		os.Exit(1)
 	}
 

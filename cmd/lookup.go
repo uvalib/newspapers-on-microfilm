@@ -63,6 +63,8 @@ func lookup(req lookupRequest) lookupResponse {
 	var rows *sql.Rows
 	var err error
 
+	log.Printf("lookup request: %#v", req)
+
 	// enforce upper case for backwards compatibility, and ease of comparisons
 	req.state = strings.ToUpper(req.state)
 
