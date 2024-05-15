@@ -5,7 +5,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/url"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -21,8 +20,6 @@ func firstEntry(s []string) string {
 }
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	log.Printf("request: %#v", request)
-
 	var choice string
 	var state string
 	var year string
