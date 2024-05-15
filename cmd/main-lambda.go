@@ -43,6 +43,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 		if err != nil {
 			return events.APIGatewayProxyResponse{
+				Headers:    map[string]string{"Content-Type": "text/plain"},
 				Body:       err.Error(),
 				StatusCode: 500,
 			}, nil
@@ -57,6 +58,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	default:
 		// invalid method
 		return events.APIGatewayProxyResponse{
+			Headers:    map[string]string{"Content-Type": "text/plain"},
 			Body:       fmt.Sprintf("unsupported method: [%s]", request.HTTPMethod),
 			StatusCode: 405,
 		}, nil
@@ -72,6 +74,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	// if error, return 500 with error text as body
 	if err != nil {
 		return events.APIGatewayProxyResponse{
+			Headers:    map[string]string{"Content-Type": "text/plain"},
 			Body:       err.Error(),
 			StatusCode: 500,
 		}, nil
@@ -79,6 +82,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 	// success
 	return events.APIGatewayProxyResponse{
+		Headers:    map[string]string{"Content-Type": "text/html"},
 		Body:       buf,
 		StatusCode: 200,
 	}, nil
