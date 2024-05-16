@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -17,6 +18,28 @@ func firstEntry(s []string) string {
 	}
 
 	return s[0]
+}
+
+func proxyResponseGeneric(code int, contentType string, body string) events.APIGatewayProxyResponse {
+	headers := make(map[string]string)
+
+	if contentType != "" {
+		headers["Content-Type"] = contentType
+	}
+
+	return events.APIGatewayProxyResponse{
+		Headers:    headers,
+		Body:       body,
+		StatusCode: code,
+	}
+}
+
+func proxyResponseError(code int, body string) events.APIGatewayProxyResponse {
+	return proxyResponseGeneric(code, "text/plain", body)
+}
+
+func proxyResponseSuccess(body string) events.APIGatewayProxyResponse {
+	return proxyResponseGeneric(http.StatusOK, "text/html", body)
 }
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -42,11 +65,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		post, err := url.ParseQuery(request.Body)
 
 		if err != nil {
-			return events.APIGatewayProxyResponse{
-				Headers:    map[string]string{"Content-Type": "text/plain"},
-				Body:       err.Error(),
-				StatusCode: 500,
-			}, nil
+			return proxyResponseError(http.StatusInternalServerError, err.Error()), nil
 		}
 
 		choice = firstEntry(post["choice"])
@@ -57,35 +76,25 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 	default:
 		// invalid method
-		return events.APIGatewayProxyResponse{
-			Headers:    map[string]string{"Content-Type": "text/plain"},
-			Body:       fmt.Sprintf("unsupported method: [%s]", request.HTTPMethod),
-			StatusCode: 405,
-		}, nil
+		return proxyResponseError(http.StatusMethodNotAllowed, fmt.Sprintf("unsupported method: [%s]", request.HTTPMethod)), nil
 	}
 
 	// perform lookup
 	req := lookupRequest{choice: choice, state: state, year: year, begin: begin, end: end}
 	res := lookup(req)
 
-	// convert response to html
-	buf, err := res.toHTML()
+	if res.err != nil {
+		return proxyResponseError(http.StatusInternalServerError, res.err.Error()), nil
+	}
 
-	// if error, return 500 with error text as body
+	// convert response to html
+	page, err := res.toHTML()
 	if err != nil {
-		return events.APIGatewayProxyResponse{
-			Headers:    map[string]string{"Content-Type": "text/plain"},
-			Body:       err.Error(),
-			StatusCode: 500,
-		}, nil
+		return proxyResponseError(http.StatusInternalServerError, err.Error()), nil
 	}
 
 	// success
-	return events.APIGatewayProxyResponse{
-		Headers:    map[string]string{"Content-Type": "text/html"},
-		Body:       buf,
-		StatusCode: 200,
-	}, nil
+	return proxyResponseSuccess(page), nil
 }
 
 func main() {
