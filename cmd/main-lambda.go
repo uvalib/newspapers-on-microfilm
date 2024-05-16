@@ -69,7 +69,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		}
 
 		choice = firstEntry(post["choice"])
-		state = firstEntry(post["state"])
+		state = firstEntry(post["file"])
 		year = firstEntry(post["year"])
 		begin = firstEntry(post["begin"])
 		end = firstEntry(post["end"])
